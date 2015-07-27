@@ -358,30 +358,43 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     [self updateImage];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch
+                     withEvent:(UIEvent *)event
 {
-    [self setTouchPoint:[[touches anyObject] locationInView:self]];
+    BOOL begin = [self setTouchPoint:[touch locationInView:self]];
     
     [_delegate colorWheelDidChangeColor:self];
+    
+    if (!begin) {
+        [self resignFirstResponder];
+    }
+
+    return begin;
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch
+                        withEvent:(UIEvent *)event
 {
-    [self setTouchPoint:[[touches anyObject] locationInView:self]];
+    [self setTouchPoint:[touch locationInView:self]];
     
     if (_continuous)
     {
         [_delegate colorWheelDidChangeColor:self];
     }
+    
+    return YES;
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)endTrackingWithTouch:(UITouch *)touches
+                   withEvent:(UIEvent *)event
 {
     [_delegate colorWheelDidChangeColor:self];
 }
 
-- (void)setTouchPoint:(CGPoint)point
+- (BOOL)setTouchPoint:(CGPoint)point
 {
+    BOOL isInside = YES;
+    
     float width = self.bounds.size.width;
     float height = self.bounds.size.height;
     
@@ -394,6 +407,8 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     }
     else
     {
+        isInside = NO;
+        
         // If so we need to create a drection vector and calculate the constrained point
         CGPoint vec = CGPointMake(point.x - center.x, point.y - center.y);
         
@@ -406,6 +421,8 @@ static PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     }
     
     [self updateKnob];
+    
+    return isInside;
 }
 
 @end

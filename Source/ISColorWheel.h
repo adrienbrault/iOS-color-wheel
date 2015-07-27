@@ -15,7 +15,7 @@
 @end
 
 
-@interface ISColorWheel : UIView
+@interface ISColorWheel : UIControl
 
 @property(nonatomic, retain)UIView* knobView;
 @property(nonatomic, assign)CGSize knobSize;
@@ -25,7 +25,7 @@
 
 - (void)updateImage;
 
-- (void)setTouchPoint:(CGPoint)point;
+- (BOOL)setTouchPoint:(CGPoint)point;
 
 - (void)setCurrentColor:(UIColor*)color;
 - (UIColor*)currentColor;
